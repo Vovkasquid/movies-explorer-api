@@ -23,7 +23,7 @@ const auth = require("./middlewares/auth");
 const { PORT = 3001 } = process.env;
 
 // подключаемся к серверу mongo
-mongoose.connect("mongodb://localhost:27017/mestodb", {
+mongoose.connect("mongodb://localhost:27017/bitfilmsdb", {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
@@ -63,8 +63,6 @@ app.post("/signin", celebrate({
 app.post("/signup", celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().custom(urlValidator),
     email: Joi.string().email().required(),
     password: Joi.string().required().min(8).max(35),
   }),

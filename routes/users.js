@@ -6,28 +6,21 @@ const {
 } = require("../controllers/users");
 
 /*
-GET /users — возвращает всех пользователей
-GET /users/:userId - возвращает пользователя по _id
-POST /users — создаёт пользователя */
+# возвращает информацию о пользователе (email и имя)
+GET /users/me
 
-/*  PATCH /users/me — обновляет профиль
-    PATCH /users/me/avatar — обновляет аватар
+# обновляет информацию о пользователе (email и имя)
+PATCH /users/me
 */
 
-router.get("/users", getAllUsers);
 
 router.get("/users/me", getCurrentUser);
-
-router.get("/users/:userId", celebrate({
-  params: Joi.object().keys({
-    userId: Joi.string().length(24).hex(),
-  }),
-}), getUser);
 
 router.patch("/users/me", celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    about: Joi.string().required().min(2).max(30),
+    password: Joi.string().required(),
+    email: Joi.string().email().required(),
   }),
 }), updateUserInfo);
 
