@@ -45,7 +45,6 @@ app.use(limiter);
 // Включаем защиту заголовков
 app.use(helmet());
 
-
 // Маршруты для регистрации и авторизации
 app.post("/signin", celebrate({
   body: Joi.object().keys({
