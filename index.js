@@ -4,7 +4,6 @@ require("dotenv").config();
 const { errors, celebrate, Joi } = require("celebrate");
 const helmet = require("helmet");
 const Error404 = require("./errors/Error404");
-const urlValidator = require("./utils/urlValidator");
 const limiter = require("./utils/limiter");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 const corsMiddleware = require("./middlewares/cors-defend");
@@ -13,7 +12,7 @@ const app = express();
 
 // Подключаем роуты
 const usersRoute = require("./routes/users");
-const cardsRoute = require("./routes/cards");
+const moviesRoute = require("./routes/ movies");
 const { createUser } = require("./controllers/users");
 const checkLogin = require("./controllers/login");
 const errorsHandler = require("./middlewares/errorsHandler");
@@ -46,12 +45,6 @@ app.use(limiter);
 // Включаем защиту заголовков
 app.use(helmet());
 
-// Маршрут для краша сервера
-app.get("/crash-test", () => {
-  setTimeout(() => {
-    throw new Error("Снова сервер наш упал - это Яндекс всё сломал :D");
-  }, 0);
-});
 
 // Маршруты для регистрации и авторизации
 app.post("/signin", celebrate({
@@ -71,7 +64,7 @@ app.post("/signup", celebrate({
 app.use(auth);
 // Прописываем маршруты
 app.use("/", usersRoute);
-app.use("/", cardsRoute);
+app.use("/", moviesRoute);
 // Обработаем некорректный маршрут и вернём ошибку 404
 app.use("*", (req, res, next) => {
   next(new Error404(`Страницы по адресу ${req.baseUrl} не существует`));

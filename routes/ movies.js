@@ -2,7 +2,7 @@ const router = require("express").Router();
 const { celebrate, Joi } = require("celebrate");
 const {
   getAllCards, createCard, deleteCard, likeCard, dislikeCard,
-} = require("../controllers/cards");
+} = require("../controllers/movies");
 const urlValidator = require("../utils/urlValidator");
 
 /* GET /cards — возвращает все карточки
