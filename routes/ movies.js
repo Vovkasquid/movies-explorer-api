@@ -18,12 +18,6 @@ DELETE /movies/movieId
 
 router.get("/movies", getAllMovies);
 
-router.post("/movies", celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    link: Joi.string().required().custom(urlValidator),
-  }),
-}), createMovie);
 
 router.post("/movies", celebrate({
   body: Joi.object().keys({
