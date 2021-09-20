@@ -69,7 +69,7 @@ const createMovie = (req, res, next) => {
 };
 
 const deleteMovie = (req, res, next) => {
-  // найдём карточку и удалим её
+  // найдём фильм и удалим его
   Movie.findById(req.params.movieId)
     .orFail(() => {
       // Если мы здесь, значит запрос в базе ничего не нашёл

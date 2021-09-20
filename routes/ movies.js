@@ -18,7 +18,6 @@ DELETE /movies/movieId
 
 router.get("/movies", getAllMovies);
 
-
 router.post("/movies", celebrate({
   body: Joi.object().keys({
     country: Joi.string().required(),
@@ -35,9 +34,9 @@ router.post("/movies", celebrate({
   }),
 }), createMovie);
 
-router.delete("/movies/:cardId", celebrate({
+router.delete("/movies/:movieId", celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().length(24).hex(),
+    movieId: Joi.string().length(24).hex(),
   }),
 }), deleteMovie);
 
