@@ -19,7 +19,7 @@ const errorsHandler = require("./middlewares/errorsHandler");
 const auth = require("./middlewares/auth");
 
 //  задаём порт (ведь мы его вроде как не передаем в окружение)
-const { PORT = 3001 } = process.env;
+const { PORT = 3002 } = process.env;
 
 // подключаемся к серверу mongo
 mongoose.connect("mongodb://localhost:27017/bitfilmsdb", {
