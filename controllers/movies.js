@@ -1,11 +1,15 @@
-/* GET /cards — возвращает все карточки
-   POST /cards — создаёт карточку
-   DELETE /cards/:cardId — удаляет карточку по идентификатору
-   PUT /cards/:cardId/likes — поставить лайк карточке
-   DELETE /cards/:cardId/likes — убрать лайк с карточки
+/* # возвращает все сохранённые пользователем фильмы
+GET /movies
+
+# создаёт фильм с переданными в теле
+# country,director,duration,year, description, image, trailer, nameRU, nameEN и thumbnail, movieId
+POST /movies
+
+# удаляет сохранённый фильм по id
+DELETE /movies/movieId
 */
 
-const Card = require("../models/card");
+const Movie = require("../models/movie");
 const Error400 = require("../errors/Error400");
 const Error404 = require("../errors/Error404");
 const Error403 = require("../errors/Error403");
@@ -13,8 +17,8 @@ const Error500 = require("../errors/Error500");
 
 const ERROR_NOT_FOUND = 404;
 
-const getAllCards = (req, res, next) => {
-  Card.find({})
+const getAllMovies = (req, res, next) => {
+  Movie.find({})
     .then((cards) => {
       res.status(200).send({ data: cards });
     })
@@ -23,94 +27,71 @@ const getAllCards = (req, res, next) => {
     });
 };
 
-const createCard = (req, res, next) => {
-  const { name, link } = req.body;
+const createMovie = (req, res, next) => {
+  const {
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailer,
+    nameRU,
+    nameEN,
+    thumbnail,
+    movieId,
+  } = req.body;
   const owner = req.user._id;
-  Card.create({ name, link, owner })
-    .then((card) => {
-      res.status(200).send({ data: card });
+  Movie.create({
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailer,
+    nameRU,
+    nameEN,
+    thumbnail,
+    movieId,
+    owner,
+  })
+    .then((movie) => {
+      res.status(200).send({ data: movie });
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        next(new Error400("Переданы некорректные данные при создании карточки"));
+        next(new Error400("Переданы некорректные данные при создании фильма"));
       } else {
         next(new Error500("Что-то пошло не так :("));
       }
     });
 };
 
-const deleteCard = (req, res, next) => {
+const deleteMovie = (req, res, next) => {
   // найдём карточку и удалим её
-  Card.findById(req.params.cardId)
+  Movie.findById(req.params.movieId)
     .orFail(() => {
       // Если мы здесь, значит запрос в базе ничего не нашёл
       // Бросаем ошибку и попадаем в catch
-      throw new Error404("Карточка с заданным ID отсутствует в базе данных");
+      throw new Error404("Фильм с заданным ID отсутствует в базе данных");
     })
-    .then((card) => {
-      // Надо проверить может ли пользователь удалить эту карточку
-      // user._id приходит с типом string, а card.owner._id приходит с форматом object
+    .then((movie) => {
+      // Надо проверить может ли пользователь удалить этот фильм
+      // user._id приходит с типом string, а movie.owner._id приходит с форматом object
       // необходимо привести к строке
-      if (req.user._id !== card.owner.toString()) {
+      if (req.user._id !== movie.owner.toString()) {
         // Бросаем ошибку, что пользователь не может это делать
-        next(new Error403("Нельзя удалить чужую карточку"));
+        next(new Error403("Нельзя удалить чужой фильм"));
       } else {
-        card.remove();
+        movie.remove();
         res.status(200)
-          .send({ message: `Карточка с id ${card.id} успешно удалена!` });
+          .send({ message: `Фильм с id ${movie.id} успешно удалён!` });
       }
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        next(new Error400("Ошибка в формате ID карточки"));
-      } else if (err.statusCode === ERROR_NOT_FOUND) {
-        next(err);
-      } else {
-        next(new Error500("Что-то пошло не так :("));
-      }
-    });
-};
-
-const likeCard = (req, res, next) => {
-  Card.findByIdAndUpdate(
-    req.params.cardId,
-    { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
-    { new: true },
-  )
-    .orFail(() => {
-      // Если мы здесь, значит запрос в базе ничего не нашёл
-      throw new Error404("Карточка с заданным ID отсутствует в базе данных");
-    })
-    .then((card) => {
-      res.status(200).send({ data: card });
-    })
-    .catch((err) => {
-      if (err.name === "CastError") {
-        next(new Error400("Ошибка в формате ID карточки"));
-      } else if (err.statusCode === ERROR_NOT_FOUND) {
-        next(err);
-      } else {
-        next(new Error500("Что-то пошло не так :("));
-      }
-    });
-};
-
-const dislikeCard = (req, res, next) => {
-  Card.findByIdAndUpdate(
-    req.params.cardId,
-    { $pull: { likes: req.user._id } }, // убрать _id из массива
-    { new: true },
-  )
-    .orFail(() => {
-      // Если мы здесь, значит запрос в базе ничего не нашёл
-      throw new Error404("Карточка с заданным ID отсутствует в базе данных");
-    })
-    .then((card) => {
-      res.status(200).send({ data: card });
-    })
-    .catch((err) => {
-      if (err.name === "CastError") {
-        next(new Error400("Ошибка в формате ID карточки"));
+        next(new Error400("Ошибка в формате ID фильма"));
       } else if (err.statusCode === ERROR_NOT_FOUND) {
         next(err);
       } else {
@@ -120,5 +101,5 @@ const dislikeCard = (req, res, next) => {
 };
 
 module.exports = {
-  getAllCards, createCard, deleteCard, likeCard, dislikeCard,
+  getAllMovies, createMovie, deleteMovie,
 };
