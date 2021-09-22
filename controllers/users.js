@@ -88,6 +88,8 @@ const updateUserInfo = (req, res, next) => {
         next(new Error400('Переданы некорректные данные при обновлении данных пользователя'));
       } else if (err.statusCode === ERROR_NOT_FOUND) {
         next(err);
+      } else if (err.codeName === 'DuplicateKey') {
+        next(new Error409('Нельзя присвоить себе чужой email'));
       } else {
         next(new Error500('Что-то пошло не так :('));
       }
