@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
-const { errors, celebrate, Joi } = require('celebrate');
+const { errors } = require('celebrate');
 const helmet = require('helmet');
 const Error404 = require('./errors/Error404');
 const limiter = require('./utils/limiter');
@@ -13,8 +13,7 @@ const app = express();
 // Подключаем роуты
 const usersRoute = require('./routes/users');
 const moviesRoute = require('./routes/ movies');
-const { createUser } = require('./controllers/users');
-const checkLogin = require('./controllers/login');
+const authRoute = require('./routes/auth');
 const errorsHandler = require('./middlewares/errorsHandler');
 const auth = require('./middlewares/auth');
 
@@ -45,25 +44,12 @@ app.use(limiter);
 // Включаем защиту заголовков
 app.use(helmet());
 
-// Маршруты для регистрации и авторизации
-app.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().email().required(),
-    password: Joi.string().required(),
-  }),
-}), checkLogin);
-app.post('/signup', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    email: Joi.string().email().required(),
-    password: Joi.string().required().min(8).max(35),
-  }),
-}), createUser);
 // Защищаем пути авторизацией
 app.use(auth);
 // Прописываем маршруты
-app.use('/', usersRoute);
-app.use('/', moviesRoute);
+app.use(authRoute);
+app.use(usersRoute);
+app.use(moviesRoute);
 // Обработаем некорректный маршрут и вернём ошибку 404
 app.use('*', (req, res, next) => {
   next(new Error404(`Страницы по адресу ${req.baseUrl} не существует`));
