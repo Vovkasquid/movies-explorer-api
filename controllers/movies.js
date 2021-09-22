@@ -82,12 +82,12 @@ const deleteMovie = (req, res, next) => {
       // необходимо привести к строке
       if (req.user._id !== movie.owner.toString()) {
         // Бросаем ошибку, что пользователь не может это делать
-        next(new Error403('Нельзя удалить чужой фильм'));
-      } else {
-        movie.remove();
-        res.status(200)
-          .send({ message: `Фильм с id ${movie.id} успешно удалён!` });
+        return next(new Error403('Нельзя удалить чужой фильм'));
       }
+      return movie.remove()
+        .then(() => {
+          res.status(200).send({ message: `Фильм с id ${movie.id} успешно удалён!` });
+        });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
