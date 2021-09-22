@@ -82,7 +82,7 @@ const deleteMovie = (req, res, next) => {
       }
       return movie.remove()
         .then(() => {
-          res.status(200).send({ message: `Фильм с id ${movie.id} успешно удалён!` });
+          res.send({ message: `Фильм с id ${movie.id} успешно удалён!` });
         });
     })
     .catch((err) => {

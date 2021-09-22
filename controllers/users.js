@@ -72,7 +72,7 @@ const updateUserInfo = (req, res, next) => {
       next(new Error404('Пользователь по заданному ID отсутствует в базе данных'));
     })
     .then((newUserInfo) => {
-      res.status(200).send({ data: newUserInfo });
+      res.send({ data: newUserInfo });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
