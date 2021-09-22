@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken'); // импортируем модуль jsonwebtoken
 const Error401 = require('../errors/Error401');
 
-// eslint-disable-next-line consistent-return
 module.exports = (req, res, next) => {
   const { JWT_SECRET = 'strongest-key-ever' } = process.env;
   const { authorization } = req.headers;
@@ -23,5 +22,5 @@ module.exports = (req, res, next) => {
 
   req.user = payload; // записываем пейлоуд в объект запроса
 
-  next(); // пропускаем запрос дальше
+  return next(); // пропускаем запрос дальше
 };
