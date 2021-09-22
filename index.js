@@ -44,10 +44,10 @@ app.use(limiter);
 // Включаем защиту заголовков
 app.use(helmet());
 
-// Защищаем пути авторизацией
-app.use(auth);
 // Прописываем маршруты
 app.use(authRoute);
+// Защищаем пути авторизацией
+app.use(auth);
 app.use(usersRoute);
 app.use(moviesRoute);
 // Обработаем некорректный маршрут и вернём ошибку 404
