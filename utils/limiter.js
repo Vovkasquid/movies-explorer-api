@@ -1,4 +1,4 @@
-const rateLimit = require("express-rate-limit");
+const rateLimit = require('express-rate-limit');
 
 // Настраиваем защиту от ДДОС-аттак.
 const limiter = rateLimit({

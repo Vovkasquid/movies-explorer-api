@@ -9,11 +9,11 @@ POST /movies
 DELETE /movies/movieId
 */
 
-const Movie = require("../models/movie");
-const Error400 = require("../errors/Error400");
-const Error404 = require("../errors/Error404");
-const Error403 = require("../errors/Error403");
-const Error500 = require("../errors/Error500");
+const Movie = require('../models/movie');
+const Error400 = require('../errors/Error400');
+const Error404 = require('../errors/Error404');
+const Error403 = require('../errors/Error403');
+const Error500 = require('../errors/Error500');
 
 const ERROR_NOT_FOUND = 404;
 
@@ -23,7 +23,7 @@ const getAllMovies = (req, res, next) => {
       res.status(200).send({ data: cards });
     })
     .catch(() => {
-      next(new Error500("Что-то пошло не так :("));
+      next(new Error500('Что-то пошло не так :('));
     });
 };
 
@@ -60,10 +60,10 @@ const createMovie = (req, res, next) => {
       res.status(200).send({ data: movie });
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        next(new Error400("Переданы некорректные данные при создании фильма"));
+      if (err.name === 'ValidationError') {
+        next(new Error400('Переданы некорректные данные при создании фильма'));
       } else {
-        next(new Error500("Что-то пошло не так :("));
+        next(new Error500('Что-то пошло не так :('));
       }
     });
 };
@@ -74,7 +74,7 @@ const deleteMovie = (req, res, next) => {
     .orFail(() => {
       // Если мы здесь, значит запрос в базе ничего не нашёл
       // Бросаем ошибку и попадаем в catch
-      throw new Error404("Фильм с заданным ID отсутствует в базе данных");
+      throw new Error404('Фильм с заданным ID отсутствует в базе данных');
     })
     .then((movie) => {
       // Надо проверить может ли пользователь удалить этот фильм
@@ -82,7 +82,7 @@ const deleteMovie = (req, res, next) => {
       // необходимо привести к строке
       if (req.user._id !== movie.owner.toString()) {
         // Бросаем ошибку, что пользователь не может это делать
-        next(new Error403("Нельзя удалить чужой фильм"));
+        next(new Error403('Нельзя удалить чужой фильм'));
       } else {
         movie.remove();
         res.status(200)
@@ -90,12 +90,12 @@ const deleteMovie = (req, res, next) => {
       }
     })
     .catch((err) => {
-      if (err.name === "CastError") {
-        next(new Error400("Ошибка в формате ID фильма"));
+      if (err.name === 'CastError') {
+        next(new Error400('Ошибка в формате ID фильма'));
       } else if (err.statusCode === ERROR_NOT_FOUND) {
         next(err);
       } else {
-        next(new Error500("Что-то пошло не так :("));
+        next(new Error500('Что-то пошло не так :('));
       }
     });
 };

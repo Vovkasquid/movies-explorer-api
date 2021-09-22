@@ -1,9 +1,9 @@
-const router = require("express").Router();
-const { celebrate, Joi } = require("celebrate");
+const router = require('express').Router();
+const { celebrate, Joi } = require('celebrate');
 const {
   getAllMovies, createMovie, deleteMovie,
-} = require("../controllers/movies");
-const urlValidator = require("../utils/urlValidator");
+} = require('../controllers/movies');
+const urlValidator = require('../utils/urlValidator');
 
 /* # возвращает все сохранённые пользователем фильмы
 GET /movies
@@ -16,9 +16,9 @@ POST /movies
 DELETE /movies/movieId
 */
 
-router.get("/movies", getAllMovies);
+router.get('/movies', getAllMovies);
 
-router.post("/movies", celebrate({
+router.post('/movies', celebrate({
   body: Joi.object().keys({
     country: Joi.string().required(),
     director: Joi.string().required(),
@@ -34,7 +34,7 @@ router.post("/movies", celebrate({
   }),
 }), createMovie);
 
-router.delete("/movies/:movieId", celebrate({
+router.delete('/movies/:movieId', celebrate({
   params: Joi.object().keys({
     movieId: Joi.string().length(24).hex(),
   }),

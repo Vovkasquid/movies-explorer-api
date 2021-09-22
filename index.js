@@ -1,28 +1,28 @@
-const express = require("express");
-const mongoose = require("mongoose");
-require("dotenv").config();
-const { errors, celebrate, Joi } = require("celebrate");
-const helmet = require("helmet");
-const Error404 = require("./errors/Error404");
-const limiter = require("./utils/limiter");
-const { requestLogger, errorLogger } = require("./middlewares/logger");
-const corsMiddleware = require("./middlewares/cors-defend");
+const express = require('express');
+const mongoose = require('mongoose');
+require('dotenv').config();
+const { errors, celebrate, Joi } = require('celebrate');
+const helmet = require('helmet');
+const Error404 = require('./errors/Error404');
+const limiter = require('./utils/limiter');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+const corsMiddleware = require('./middlewares/cors-defend');
 
 const app = express();
 
 // Подключаем роуты
-const usersRoute = require("./routes/users");
-const moviesRoute = require("./routes/ movies");
-const { createUser } = require("./controllers/users");
-const checkLogin = require("./controllers/login");
-const errorsHandler = require("./middlewares/errorsHandler");
-const auth = require("./middlewares/auth");
+const usersRoute = require('./routes/users');
+const moviesRoute = require('./routes/ movies');
+const { createUser } = require('./controllers/users');
+const checkLogin = require('./controllers/login');
+const errorsHandler = require('./middlewares/errorsHandler');
+const auth = require('./middlewares/auth');
 
 //  задаём порт (ведь мы его вроде как не передаем в окружение)
 const { PORT = 3002 } = process.env;
 
 // подключаемся к серверу mongo
-mongoose.connect("mongodb://localhost:27017/moviesdb", {
+mongoose.connect('mongodb://localhost:27017/moviesdb', {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
@@ -46,13 +46,13 @@ app.use(limiter);
 app.use(helmet());
 
 // Маршруты для регистрации и авторизации
-app.post("/signin", celebrate({
+app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().email().required(),
     password: Joi.string().required(),
   }),
 }), checkLogin);
-app.post("/signup", celebrate({
+app.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     email: Joi.string().email().required(),
@@ -62,10 +62,10 @@ app.post("/signup", celebrate({
 // Защищаем пути авторизацией
 app.use(auth);
 // Прописываем маршруты
-app.use("/", usersRoute);
-app.use("/", moviesRoute);
+app.use('/', usersRoute);
+app.use('/', moviesRoute);
 // Обработаем некорректный маршрут и вернём ошибку 404
-app.use("*", (req, res, next) => {
+app.use('*', (req, res, next) => {
   next(new Error404(`Страницы по адресу ${req.baseUrl} не существует`));
 });
 // Подключаем логгер ошибок

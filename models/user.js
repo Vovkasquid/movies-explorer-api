@@ -1,12 +1,12 @@
-const mongoose = require("mongoose");
-const validatorModule = require("validator");
+const mongoose = require('mongoose');
+const validatorModule = require('validator');
 
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
     minlength: 2,
     maxlength: 30,
-    default: "Александр Петров",
+    default: 'Александр Петров',
   },
   email: {
     type: String,
@@ -24,4 +24,4 @@ const userSchema = new mongoose.Schema({
   },
 }, { versionKey: false });
 
-module.exports = mongoose.model("user", userSchema);
+module.exports = mongoose.model('user', userSchema);
