@@ -27,10 +27,9 @@ const checkLogin = (req, res, next) => {
         })
         .catch((err) => {
           if (err.statusCode === ERROR_CODE_UNAUTHORIZED) {
-            next(err);
-          } else {
-            next(new Error500('Что-то пошло не так :('));
+            return next(err);
           }
+          return next(new Error500('Что-то пошло не так :('));
         });
     })
     .catch((err) => {
