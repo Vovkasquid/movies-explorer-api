@@ -13,17 +13,14 @@ const Movie = require('../models/movie');
 const Error400 = require('../errors/Error400');
 const Error404 = require('../errors/Error404');
 const Error403 = require('../errors/Error403');
-const Error500 = require('../errors/Error500');
-
-const ERROR_NOT_FOUND = 404;
 
 const getAllMovies = (req, res, next) => {
   Movie.find({})
     .then((cards) => {
-      res.status(200).send({ data: cards });
+      res.send({ data: cards });
     })
-    .catch(() => {
-      next(new Error500('Что-то пошло не так :('));
+    .catch((err) => {
+      next(err);
     });
 };
 
@@ -57,13 +54,13 @@ const createMovie = (req, res, next) => {
     owner,
   })
     .then((movie) => {
-      res.status(200).send({ data: movie });
+      res.send({ data: movie });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return next(new Error400('Переданы некорректные данные при создании фильма'));
       }
-      return next(new Error500('Что-то пошло не так :('));
+      return next(err);
     });
 };
 
@@ -91,10 +88,8 @@ const deleteMovie = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         return next(new Error400('Ошибка в формате ID фильма'));
-      } if (err.statusCode === ERROR_NOT_FOUND) {
-        return next(err);
       }
-      return next(new Error500('Что-то пошло не так :('));
+      return next(err);
     });
 };
 

@@ -2,7 +2,6 @@ const bcrypt = require('bcryptjs'); // импортируем bcrypt
 const jwt = require('jsonwebtoken'); // импортируем модуль jsonwebtoken
 const User = require('../models/user');
 const Error401 = require('../errors/Error401');
-const Error500 = require('../errors/Error500');
 
 const ERROR_CODE_UNAUTHORIZED = 401;
 
@@ -29,7 +28,7 @@ const checkLogin = (req, res, next) => {
           if (err.statusCode === ERROR_CODE_UNAUTHORIZED) {
             return next(err);
           }
-          return next(new Error500('Что-то пошло не так :('));
+          return next(err);
         });
     })
     .catch((err) => {
@@ -38,7 +37,7 @@ const checkLogin = (req, res, next) => {
       } if (err.name === 'TypeError') {
         return next(new Error401('Указан некорректный email или пароль.'));
       }
-      return next(new Error500('Что-то пошло не так :('));
+      return next(err);
     });
 };
 

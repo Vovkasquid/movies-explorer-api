@@ -3,9 +3,6 @@ const User = require('../models/user');
 const Error400 = require('../errors/Error400');
 const Error404 = require('../errors/Error404');
 const Error409 = require('../errors/Error409');
-const Error500 = require('../errors/Error500');
-
-const ERROR_NOT_FOUND = 404;
 
 // Колбек получения данных текущего пользователя
 const getCurrentUser = (req, res, next) => {
@@ -21,10 +18,8 @@ const getCurrentUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new Error400('Ошибка в формате ID пользователя'));
-      } if (err.statusCode === ERROR_NOT_FOUND) {
-        return next(err);
       }
-      return next(new Error500('Что-то пошло не так :('));
+      return next(err);
     });
 };
 
@@ -52,7 +47,7 @@ const createUser = (req, res, next) => {
           } if (err.name === 'MongoError' && err.code === 11000) {
             return next(new Error409('Данный пользователь уже зарегистрирован'));
           }
-          return next(new Error500('Что-то пошло не так :('));
+          return next(err);
         });
     })
     .catch(() => {
@@ -84,12 +79,10 @@ const updateUserInfo = (req, res, next) => {
         return next(new Error400('Ошибка в формате ID пользователя'));
       } if (err.name === 'ValidationError') {
         return next(new Error400('Переданы некорректные данные при обновлении данных пользователя'));
-      } if (err.statusCode === ERROR_NOT_FOUND) {
-        return next(err);
       } if (err.codeName === 'DuplicateKey') {
         return next(new Error409('Нельзя присвоить себе чужой email'));
       }
-      return next(new Error500('Что-то пошло не так :('));
+      return next(err);
     });
 };
 
