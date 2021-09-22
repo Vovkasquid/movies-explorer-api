@@ -61,10 +61,9 @@ const createMovie = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new Error400('Переданы некорректные данные при создании фильма'));
-      } else {
-        next(new Error500('Что-то пошло не так :('));
+        return next(new Error400('Переданы некорректные данные при создании фильма'));
       }
+      return next(new Error500('Что-то пошло не так :('));
     });
 };
 
@@ -91,12 +90,11 @@ const deleteMovie = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new Error400('Ошибка в формате ID фильма'));
-      } else if (err.statusCode === ERROR_NOT_FOUND) {
-        next(err);
-      } else {
-        next(new Error500('Что-то пошло не так :('));
+        return next(new Error400('Ошибка в формате ID фильма'));
+      } if (err.statusCode === ERROR_NOT_FOUND) {
+        return next(err);
       }
+      return next(new Error500('Что-то пошло не так :('));
     });
 };
 

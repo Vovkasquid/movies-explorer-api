@@ -21,11 +21,10 @@ const getCurrentUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new Error400('Ошибка в формате ID пользователя'));
-      } else if (err.statusCode === ERROR_NOT_FOUND) {
-        next(err);
-      } else {
-        next(new Error500('Что-то пошло не так :('));
+      } if (err.statusCode === ERROR_NOT_FOUND) {
+        return next(err);
       }
+      return next(new Error500('Что-то пошло не так :('));
     });
 };
 
@@ -49,12 +48,11 @@ const createUser = (req, res, next) => {
         })
         .catch((err) => {
           if (err.name === 'ValidationError') {
-            next(new Error400('Переданы некорректные данные при создании пользователя'));
-          } else if (err.name === 'MongoError' && err.code === 11000) {
-            next(new Error409('Данный пользователь уже зарегистрирован'));
-          } else {
-            next(new Error500('Что-то пошло не так :('));
+            return next(new Error400('Переданы некорректные данные при создании пользователя'));
+          } if (err.name === 'MongoError' && err.code === 11000) {
+            return next(new Error409('Данный пользователь уже зарегистрирован'));
           }
+          return next(new Error500('Что-то пошло не так :('));
         });
     })
     .catch(() => {
@@ -83,16 +81,15 @@ const updateUserInfo = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new Error400('Ошибка в формате ID пользователя'));
-      } else if (err.name === 'ValidationError') {
-        next(new Error400('Переданы некорректные данные при обновлении данных пользователя'));
-      } else if (err.statusCode === ERROR_NOT_FOUND) {
-        next(err);
-      } else if (err.codeName === 'DuplicateKey') {
-        next(new Error409('Нельзя присвоить себе чужой email'));
-      } else {
-        next(new Error500('Что-то пошло не так :('));
+        return next(new Error400('Ошибка в формате ID пользователя'));
+      } if (err.name === 'ValidationError') {
+        return next(new Error400('Переданы некорректные данные при обновлении данных пользователя'));
+      } if (err.statusCode === ERROR_NOT_FOUND) {
+        return next(err);
+      } if (err.codeName === 'DuplicateKey') {
+        return next(new Error409('Нельзя присвоить себе чужой email'));
       }
+      return next(new Error500('Что-то пошло не так :('));
     });
 };
 

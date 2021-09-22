@@ -35,12 +35,11 @@ const checkLogin = (req, res, next) => {
     })
     .catch((err) => {
       if (err.statusCode === ERROR_CODE_UNAUTHORIZED) {
-        next(err);
+        return next(err);
       } if (err.name === 'TypeError') {
-        next(new Error401('Указан некорректный email или пароль.'));
-      } else {
-        next(new Error500('Что-то пошло не так :('));
+        return next(new Error401('Указан некорректный email или пароль.'));
       }
+      return next(new Error500('Что-то пошло не так :('));
     });
 };
 
