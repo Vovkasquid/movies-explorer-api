@@ -28,18 +28,18 @@ mongoose.connect(MONGO_URL, {
   useUnifiedTopology: true,
 });
 
+// Включаем логгер запросов
+app.use(requestLogger);
+
+// Подключаем ограничитель запросов
+app.use(limiter);
+
 // подключаем мидлвары, роуты и всё остальное...
 // bodyparser теперь часть экспресса, поэтому подключаем его так
 app.use(express.json());
 
 // Подключаем мидлвару для работы с CORS
 app.use(corsMiddleware);
-
-// Включаем логгер запросов
-app.use(requestLogger);
-
-// Подключаем ограничитель запросов
-app.use(limiter);
 
 // Включаем защиту заголовков
 app.use(helmet());
