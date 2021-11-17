@@ -1,7 +1,7 @@
 // Массив доменов, с которых разрешены кросс-доменные запросы
 const allowedCors = [
-  'http://mestosquid.nomoredomains.rocks',
-  'https://mestosquid.nomoredomains.rocks',
+  'http://moviesquid.nomoredomains.monster',
+  'https://moviesquid.nomoredomains.monster',
   'http://localhost:3000',
   'https://localhost:3000',
 ];
